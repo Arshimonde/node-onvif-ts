@@ -72,7 +72,7 @@ export class OnvifServiceSearch extends OnvifServiceBase {
     /* ------------------------------------------------------------------
      * Method: getRecordingSearchResults(params: GetRecordingSearchResultsParams): Promise<Result>
      * ---------------------------------------------------------------- */
-    getRecordingSearchResults = function (params: GetRecordingSearchResultsParams): Promise<Result> {
+    getRecordingSearchResults(params: GetRecordingSearchResultsParams): Promise<Result> {
         let soapBody = '';
         soapBody += '<tse:GetRecordingSearchResults>';
         soapBody += '<tse:SearchToken>' + params['SearchToken'] + '</tse:SearchToken>';

@@ -351,16 +351,16 @@ export class OnvifDevice extends EventEmitter{
 
                 if (p.VideoEncoderConfiguration) {
 					profile.video.encoder = {
-						token: p.VideoEncoderConfiguration.$?.token,
-						name: p.VideoEncoderConfiguration.Name,
-						resolution: {
-							width: parseInt(p.VideoEncoderConfiguration.Resolution.Width, 10),
-							height: parseInt(p.VideoEncoderConfiguration.Resolution.Height, 10),
+						'token': p['VideoEncoderConfiguration']['$']['token'],
+						'name': p['VideoEncoderConfiguration']['Name'],
+						'resolution': {
+							'width': parseInt((p['VideoEncoderConfiguration']['Resolution'] || {})['Width'], 10),
+							'height': parseInt((p['VideoEncoderConfiguration']['Resolution'] || {})['Height'], 10),
 						},
-						quality: parseInt(p.VideoEncoderConfiguration.Quality, 10),
-						framerate: parseInt(p.VideoEncoderConfiguration.RateControl.FrameRateLimit, 10),
-						bitrate: parseInt(p.VideoEncoderConfiguration.RateControl.BitrateLimit, 10),
-						encoding: p.VideoEncoderConfiguration.Encoding
+						'quality': parseInt(p['VideoEncoderConfiguration']['Quality'], 10),
+						'framerate': parseInt((p['VideoEncoderConfiguration']['RateControl'] || {})['FrameRateLimit'], 10),
+						'bitrate': parseInt((p['VideoEncoderConfiguration']['RateControl'] || {})['BitrateLimit'], 10),
+						'encoding': p['VideoEncoderConfiguration']['Encoding']
 					};
                 }
 
