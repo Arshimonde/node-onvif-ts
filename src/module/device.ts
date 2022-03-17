@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import { OnvifServiceEvents } from './service-events';
 import { OnvifServiceMedia } from './service-media';
+import { OnvifServiceSearch } from './service-search';
 import { OnvifServicePtz, ContinuousMoveParams, StopParams } from './service-ptz';
 import { parse, UrlWithStringQuery, format, UrlObject } from 'url';
 import { OnvifServiceDevice } from './service-device';
@@ -55,7 +56,8 @@ export class OnvifDevice extends EventEmitter{
             device: new OnvifServiceDevice({xaddr: this.xaddr, user: this.user, pass: this.pass}),
             events: null,
             media: null,
-            ptz: null
+            ptz: null,
+            search: null
         };
     }
 
@@ -271,6 +273,16 @@ export class OnvifDevice extends EventEmitter{
         const ptzXaddr = c.PTZ?.XAddr;
         if (ptzXaddr) {
             this.services.ptz = new OnvifServicePtz({
+                xaddr: this.getXaddr(ptzXaddr),
+                timeDiff: this.timeDiff,
+                user: this.user,
+                pass: this.pass,
+            });
+        }
+
+        const searchXaddr = c.Extension?.Search?.XAddr;
+        if (searchXaddr) {
+            this.services.search = new OnvifServiceSearch({
                 xaddr: this.getXaddr(ptzXaddr),
                 timeDiff: this.timeDiff,
                 user: this.user,
@@ -583,4 +595,5 @@ interface Services {
     events: OnvifServiceEvents | null;
     media: OnvifServiceMedia | null;
     ptz: OnvifServicePtz | null;
+    search: OnvifServiceSearch | null;
 }
