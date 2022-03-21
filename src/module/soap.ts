@@ -30,6 +30,9 @@ export function parse(soap: string) {
 
 export function requestCommand(oxaddr: UrlWithStringQuery, methodName: string, soap: string) {
     return new Promise<Result>((resolve, reject) => {
+        if(process.env.NODE_ENV === "development"){
+            console.debug("REQUESTING "+ methodName);
+        }
         let xml = '';
         request(oxaddr, soap).then((res) => {
             xml = res;
@@ -37,6 +40,9 @@ export function requestCommand(oxaddr: UrlWithStringQuery, methodName: string, s
         }).then((result) => {
             const fault = getFaultReason(result);
             if (fault) {
+                if(process.env.NODE_ENV === "development"){
+                    console.debug("REQUESTING "+ methodName + " Failed");
+                }
                 reject(new Error(fault));
             } else {
                 const parsed = parseResponseResult(methodName, result);
@@ -48,10 +54,18 @@ export function requestCommand(oxaddr: UrlWithStringQuery, methodName: string, s
                         data: parsed
                     });
                 } else {
+                    if(process.env.NODE_ENV === "development"){
+                        console.debug("REQUESTING "+ methodName + " Failed");
+                    }
                     reject(new Error('The device seems to not support the ' + methodName + '() method.'));
                 }
             }
-        }).catch((err) => reject(err));
+        }).catch((err) => {
+            if(process.env.NODE_ENV === "development"){
+                console.debug("REQUESTING "+ methodName + " Failed");
+            }
+            reject(err)
+        });
     });
 }
 

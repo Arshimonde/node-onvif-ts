@@ -8,6 +8,7 @@ import { OnvifServiceDevice } from './service-device';
 import { OnvifHttpAuth } from './http-auth';
 import { IncomingHttpHeaders } from 'http';
 import { Result } from './soap';
+import { OnvifServiceReplay } from './service-replay';
 
 export interface Information {
     Manufacturer: string;
@@ -57,7 +58,8 @@ export class OnvifDevice extends EventEmitter{
             events: null,
             media: null,
             ptz: null,
-            search: null
+            search: null,
+            replay: null
         };
     }
 
@@ -289,6 +291,16 @@ export class OnvifDevice extends EventEmitter{
                 pass: this.pass,
             });
         }
+
+        const replayXaddr = c.Extension?.Replay?.XAddr;
+        if (replayXaddr) {
+            this.services.replay = new OnvifServiceReplay({
+                xaddr: this.getXaddr(ptzXaddr),
+                timeDiff: this.timeDiff,
+                user: this.user,
+                pass: this.pass,
+            });
+        }
     }
 
     private async getDeviceInformation() {
@@ -445,7 +457,9 @@ export class OnvifDevice extends EventEmitter{
                             this.profileList[index].stream.udp = uri;
                     }
                 } catch (e) {
-                    console.log(e);
+                    if(process.env.NODE_ENV === "development"){
+                        console.debug(e);
+                    }
                 }
             }
             ++index;
@@ -467,7 +481,9 @@ export class OnvifDevice extends EventEmitter{
                 snapshotUri = this.getSnapshotUri(snapshotUri);
                 this.profileList[index].snapshot = snapshotUri;
             } catch (e) {
-                console.log(e);
+                if(process.env.NODE_ENV === "development"){
+                    console.debug(e);
+                }
             }
             ++index;
         }
@@ -596,4 +612,5 @@ interface Services {
     media: OnvifServiceMedia | null;
     ptz: OnvifServicePtz | null;
     search: OnvifServiceSearch | null;
+    replay: OnvifServiceReplay | null;
 }

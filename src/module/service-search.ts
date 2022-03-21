@@ -34,6 +34,7 @@ export class OnvifServiceSearch extends OnvifServiceBase {
                 soapBody += '</tt:IncludedSources>';
             })
         }
+        
         if (IncludedRecordings && Array.isArray(IncludedRecordings)) {
             IncludedRecordings.forEach((s) => {
                 soapBody += '<tt:IncludedRecordings>' + s + '</tt:IncludedRecordings>';

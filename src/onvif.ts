@@ -44,7 +44,6 @@ export function startProbe(): Promise<Probe[]> {
         devices = {};
         udp = createSocket('udp4');
         udp.once('error', (error) => {
-            console.log(error);
             reject(error);
         });
 
@@ -104,7 +103,9 @@ export function startProbe(): Promise<Probe[]> {
 				}
 			}).catch((error) => {
                 // Do nothing.
-                console.log(error);
+                if(process.env.NODE_ENV === "development"){
+                    console.debug(error);
+                }
 			});
         });
 
@@ -171,7 +172,7 @@ function sendProbe() {
 					}, DISCOVERY_INTERVAL);
 				});
 			} else {
-				resolve();
+				resolve(true);
 			}
 		};
 		send();
@@ -209,10 +210,10 @@ function stopProbe() {
             udp.close(() => {
                 udp.unref();
                 udp = null;
-                resolve();
+                resolve(true);
             });
         } else {
-            resolve();
+            resolve(true);
         }
     });
 }
